@@ -6,6 +6,8 @@
 <%@ page import="modelo.Comentario" %>
 <%@ page import="modelo.dao.PostagemDAO" %>
 <%@ page import="modelo.dao.UsuarioDAO" %>
+<%@ page import="modelo.Curtida" %>
+<%@ page import="modelo.dao.CurtidaDAO" %>
 
 <%!
     // Method to escape HTML characters to prevent XSS
@@ -365,6 +367,27 @@
         .action-btn.comment-btn:hover {
             color: #3b82f6;
             background: rgba(59, 130, 246, 0.15);
+        }
+        
+        .action-btn.like-btn {
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn.like-btn:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .action-btn.like-btn.liked {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+        }
+        
+        .action-btn.like-btn.liked:hover {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.2);
         }
         
         .comments-section {
@@ -786,6 +809,7 @@
             PostagemDAO postagemDAO = new PostagemDAO();
             List<Postagem> postagens = postagemDAO.buscarTodas();
             UsuarioDAO usuarioDAO = new UsuarioDAO();
+            CurtidaDAO curtidaDAO = new CurtidaDAO();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             
             if (postagens.isEmpty()) {
@@ -809,8 +833,15 @@
                     // Buscar comentários da postagem
                     List<Comentario> comentarios = postagemDAO.buscarComentariosPorPostagem(postagem.getIdPostagem());
                     int totalComentarios = comentarios.size();
+                    
+                    // Buscar curtidas da postagem
+                    int totalCurtidas = curtidaDAO.contarCurtidas(postagem.getIdPostagem());
+                    boolean usuarioCurtiu = false;
+                    if (usuarioAutenticado != null && usuarioAutenticado && idUsuarioLogado != null) {
+                        usuarioCurtiu = curtidaDAO.usuarioJaCurtiu(postagem.getIdPostagem(), idUsuarioLogado);
+                    }
             %>
-                    <div class="post-card">
+                    <div class="post-card" id="post-<%=postagem.getIdPostagem()%>">
                         <div class="post-header">
                             <div class="post-author">
                                 <div class="author-info">
@@ -848,6 +879,33 @@
                         
                         <div class="post-actions">
                             <div class="action-buttons">
+                                <% if (usuarioAutenticado != null && usuarioAutenticado) { %>
+                                    <% if (usuarioCurtiu) { %>
+                                        <form action="processar-curtida.jsp" method="POST" style="display: inline;">
+                                            <input type="hidden" name="acao" value="descurtir">
+                                            <input type="hidden" name="id_postagem" value="<%=postagem.getIdPostagem()%>">
+                                            <button type="submit" class="action-btn like-btn liked">
+                                                <i class="bi bi-heart-fill"></i>
+                                                <span><%=totalCurtidas%></span>
+                                            </button>
+                                        </form>
+                                    <% } else { %>
+                                        <form action="processar-curtida.jsp" method="POST" style="display: inline;">
+                                            <input type="hidden" name="acao" value="curtir">
+                                            <input type="hidden" name="id_postagem" value="<%=postagem.getIdPostagem()%>">
+                                            <button type="submit" class="action-btn like-btn">
+                                                <i class="bi bi-heart"></i>
+                                                <span><%=totalCurtidas%></span>
+                                            </button>
+                                        </form>
+                                    <% } %>
+                                <% } else { %>
+                                    <button class="action-btn like-btn" onclick="alert('Faça login para curtir!')">
+                                        <i class="bi bi-heart"></i>
+                                        <span><%=totalCurtidas%></span>
+                                    </button>
+                                <% } %>
+                                
                                 <button class="action-btn comment-btn" onclick="toggleComments(<%=postagem.getIdPostagem()%>)">
                                     <i class="bi bi-chat"></i>
                                     <span><%=totalComentarios%></span>
