@@ -2,6 +2,7 @@ package modelo.dao;
 
 import modelo.Postagem;
 import modelo.jdbc.ConnectionFactory;
+import modelo.Comentario;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -218,5 +219,52 @@ public class PostagemDAO {
             e.printStackTrace();
         }
         return postagens;
+    }
+
+    // --- LISTAR TODAS AS POSTAGENS ---
+    public List<Postagem> listarTodos() {
+        List<Postagem> postagens = new ArrayList<>();
+        String sql = "SELECT * FROM postagem ORDER BY data_criacao DESC";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                postagens.add(mapearPostagem(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return postagens;
+    }
+
+    // --- BUSCAR COMENTÁRIOS POR POSTAGEM ---
+    public List<Comentario> buscarComentariosPorPostagem(int idPostagem) {
+        List<Comentario> comentarios = new ArrayList<>();
+        String sql = "SELECT c.*, u.nome FROM comentario c " +
+                     "INNER JOIN usuario u ON c.id_usuario = u.id_usuario " +
+                     "WHERE c.id_postagem = ? ORDER BY c.data_criacao ASC";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idPostagem);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Comentario comentario = new Comentario();
+                    comentario.setIdComentario(rs.getInt("id_comentario"));
+                    comentario.setIdPostagem(rs.getInt("id_postagem"));
+                    comentario.setIdUsuario(rs.getInt("id_usuario"));
+                    comentario.setConteudo(rs.getString("conteudo"));
+                    comentario.setDataCriacao(rs.getTimestamp("data_criacao").toLocalDateTime());
+                    comentario.setNomeUsuario(rs.getString("nome"));
+                    comentarios.add(comentario);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comentarios;
     }
 }

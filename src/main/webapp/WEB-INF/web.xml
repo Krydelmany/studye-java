@@ -5,8 +5,69 @@
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>login.jsp</welcome-file>
 		<welcome-file>default.html</welcome-file>
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+	
+	<!-- Mapeamento para contato -->
+	<servlet>
+		<servlet-name>contatoJSP</servlet-name>
+		<jsp-file>/contato.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>contatoJSP</servlet-name>
+		<url-pattern>/usuario</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeamento para login -->
+	<servlet>
+		<servlet-name>loginJSP</servlet-name>
+		<jsp-file>/login.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loginJSP</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeamento para cadastro -->
+	<servlet>
+		<servlet-name>cadastroJSP</servlet-name>
+		<jsp-file>/cadastro.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>cadastroJSP</servlet-name>
+		<url-pattern>/cadastro</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeamento para feed -->
+	<servlet>
+	    <servlet-name>feedJSP</servlet-name>
+	    <jsp-file>/feed.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>feedJSP</servlet-name>
+	    <url-pattern>/feed</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeamento para perfil -->
+	<servlet>
+	    <servlet-name>perfilJSP</servlet-name>
+	    <jsp-file>/perfil.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>perfilJSP</servlet-name>
+	    <url-pattern>/perfil</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeamento para postagens (redirecionando para feed) -->
+	<servlet>
+	    <servlet-name>postagensRedirect</servlet-name>
+	    <jsp-file>/feed.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>postagensRedirect</servlet-name>
+	    <url-pattern>/postagens</url-pattern>
+	</servlet-mapping>
 </web-app>

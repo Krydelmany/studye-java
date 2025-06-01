@@ -30,23 +30,7 @@ public class ComentarioDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ATUALIZAR COMENTÁRIO
-    public void atualizar(Comentario comentario) {
-        String sql = "UPDATE comentario SET conteudo = ? WHERE id_comentario = ?";
-
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, comentario.getConteudo());
-            pstmt.setInt(2, comentario.getIdComentario());
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao inserir comentário: " + e.getMessage(), e);
         }
     }
 
@@ -60,7 +44,7 @@ public class ComentarioDAO {
             pstmt.setInt(1, idComentario);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao excluir comentário: " + e.getMessage(), e);
         }
     }
 

@@ -8,7 +8,17 @@ public class Comentario {
     private Integer idUsuario;
     private String conteudo;
     private LocalDateTime dataCriacao;
+    private String nomeUsuario; // Para exibição
 
+    public Comentario() {}
+
+    public Comentario(Integer idPostagem, Integer idUsuario, String conteudo) {
+        this.idPostagem = idPostagem;
+        this.idUsuario = idUsuario;
+        this.conteudo = conteudo;
+    }
+
+    // Getters e Setters
     public Integer getIdComentario() { return idComentario; }
     public void setIdComentario(Integer idComentario) { this.idComentario = idComentario; }
 
@@ -23,4 +33,7 @@ public class Comentario {
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+
+    public String getNomeUsuario() { return nomeUsuario; }
+    public void setNomeUsuario(String nomeUsuario) { this.nomeUsuario = nomeUsuario; }
 }

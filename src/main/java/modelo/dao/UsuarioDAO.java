@@ -150,9 +150,7 @@ public class UsuarioDAO {
             e.printStackTrace();
         }
         return usuario;
-    }
-
-    // MAPEAMENTO DO RESULTSET PARA OBJETO
+    }    // MAPEAMENTO DO RESULTSET PARA OBJETO
     private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(rs.getInt("id_usuario"));
@@ -169,5 +167,66 @@ public class UsuarioDAO {
 
         usuario.setBio(rs.getString("bio"));
         return usuario;
+    }
+    
+    // AUTENTICAÇÃO DE USUÁRIOS
+    public Usuario autenticar(String username, String senha) {
+        String sql = "SELECT * FROM usuario WHERE username = ? AND senha = ?";
+        
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username);
+            pstmt.setString(2, senha);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearUsuario(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    // VERIFICAR SE USERNAME JÁ EXISTE
+    public boolean usernameExiste(String username) {
+        String sql = "SELECT COUNT(*) FROM usuario WHERE username = ?";
+        
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // VERIFICAR SE EMAIL JÁ EXISTE
+    public boolean emailExiste(String email) {
+        String sql = "SELECT COUNT(*) FROM usuario WHERE email = ?";
+        
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, email);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
